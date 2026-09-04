@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bilangan Bulat - Level Lanjut (HOTS)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #e0e7ff 100%);
+            color: #0f172a;
+            min-height: 100vh;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(203, 213, 225, 0.5);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center font-extrabold text-2xl text-white shadow-md shadow-indigo-200">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="font-extrabold text-lg md:text-xl leading-tight bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 bg-clip-text text-transparent">
+                            Kuis Bilangan Bulat HOTS
+                        </h1>
+                        <span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-extrabold uppercase tracking-wider">
+                            Level Lanjut
+                        </span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500">Operasi 4-5 Suku, Hirarki Campuran, & Soal Kompleks (30 Soal)</p>
+                </div>
+            </div>
+
+            <!-- Stats & Action Buttons -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden sm:flex items-center space-x-3 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold">
+                    <span class="flex items-center text-emerald-600"><i class="fa-solid fa-circle-check mr-1.5"></i> Benar: <strong id="header-correct" class="ml-1 text-emerald-700 text-sm">0</strong></span>
+                    <span class="text-slate-300">|</span>
+                    <span class="flex items-center text-rose-600"><i class="fa-solid fa-circle-xmark mr-1.5"></i> Salah: <strong id="header-wrong" class="ml-1 text-rose-700 text-sm">0</strong></span>
+                    <span class="text-slate-300">|</span>
+                    <span class="flex items-center text-amber-600"><i class="fa-solid fa-hourglass-half mr-1.5"></i> Sisa: <strong id="header-remaining" class="ml-1 text-amber-700 text-sm">30</strong></span>
+                </div>
+
+                <button onclick="openResetModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition flex items-center space-x-1.5 active:scale-95">
+                    <i class="fa-solid fa-rotate-right text-amber-600"></i>
+                    <span class="hidden md:inline">Reset</span>
+                </button>
+
+                <button onclick="openSummaryModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-extrabold shadow-md shadow-indigo-200 transition flex items-center space-x-1.5 active:scale-95">
+                    <i class="fa-solid fa-trophy text-amber-300"></i>
+                    <span>Hasil Akhir</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Sidebar: Progress & Navigation Grid -->
+        <aside class="lg:col-span-4 flex flex-col space-y-4">
+            
+            <!-- Progress Card -->
+            <div class="glass-card rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center">
+                        <i class="fa-solid fa-chart-line mr-1.5 text-indigo-600"></i> Progres Pengerjaan
+                    </span>
+                    <span id="progress-percent" class="text-xs font-extrabold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-md">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden p-0.5 border border-slate-300/60">
+                    <div id="progress-bar" class="bg-gradient-to-r from-amber-500 via-indigo-500 to-purple-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Navigation Grid Card -->
+            <div class="glass-card rounded-2xl p-4 flex-1 flex flex-col">
+                <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                    <h2 class="font-extrabold text-sm text-slate-700 flex items-center">
+                        <i class="fa-solid fa-border-all mr-2 text-indigo-600"></i> Navigasi Soal
+                    </h2>
+                    <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200" id="filter-status-text">30 Soal</span>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-1.5 mb-3 text-xs">
+                    <button onclick="filterNav('all')" id="btn-filter-all" class="px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white font-bold shadow-sm transition">Semua</button>
+                    <button onclick="filterNav('garis')" id="btn-filter-garis" class="px-2.5 py-1.5 rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-bold transition">Garis & Aksis</button>
+                    <button onclick="filterNav('langsung')" id="btn-filter-langsung" class="px-2.5 py-1.5 rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-bold transition">Hitung Campuran</button>
+                    <button onclick="filterNav('cerita')" id="btn-filter-cerita" class="px-2.5 py-1.5 rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-bold transition">Soal Cerita HOTS</button>
+                </div>
+
+                <!-- Grid Buttons (30 questions) -->
+                <div id="question-grid" class="grid grid-cols-6 gap-2 custom-scrollbar overflow-y-auto max-h-[340px] p-1">
+                    <!-- Dynamic question buttons inserted here -->
+                </div>
+
+                <!-- Legend -->
+                <div class="mt-4 pt-3 border-t border-slate-200 grid grid-cols-2 gap-2 text-[11px] font-bold text-slate-500">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-emerald-600 inline-block"></span>
+                        <span>Benar</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-rose-600 inline-block"></span>
+                        <span>Salah</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded-full bg-slate-100 border border-slate-300 inline-block"></span>
+                        <span>Belum Diisi</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 rounded-full bg-indigo-600 border-2 border-amber-400 inline-block"></span>
+                        <span>Soal Aktif</span>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Right Column: Question Content Display -->
+        <section class="lg:col-span-8 flex flex-col space-y-4">
+            
+            <div class="glass-card rounded-2xl p-5 md:p-6 flex-1 flex flex-col justify-between overflow-hidden">
+                <div class="w-full">
+                    <!-- Question Header Info -->
+                    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span id="question-number-badge" class="px-3.5 py-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs shadow-sm">
+                                Soal No. 1
+                            </span>
+                            <span id="question-category-badge" class="px-3 py-1 rounded-xl bg-purple-100 text-purple-800 border border-purple-200 text-xs font-bold">
+                                Garis & Aksis Bilangan
+                            </span>
+                        </div>
+                        <div id="question-status-pill" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                            Belum Dijawab
+                        </div>
+                    </div>
+
+                    <!-- Question Text -->
+                    <div class="mb-4">
+                        <h2 id="question-text" class="text-base md:text-lg font-bold text-slate-800 leading-relaxed block">
+                            Memuat soal...
+                        </h2>
+                    </div>
+
+                    <!-- Number Line Container (SVG Visual Render) -->
+                    <div id="number-line-wrapper" class="hidden mb-6 bg-slate-50 rounded-2xl p-4 border border-indigo-100 shadow-inner overflow-x-auto">
+                        <div id="number-line-svg" class="w-full flex justify-center min-w-[620px]">
+                            <!-- SVG Rendered Here -->
+                        </div>
+                    </div>
+
+                    <!-- Options Container -->
+                    <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                        <!-- Dynamic Options Buttons -->
+                    </div>
+
+                    <!-- Feedback & Explanation Box -->
+                    <div id="feedback-box" class="hidden rounded-2xl p-4 border transition-all duration-300 mb-4 shadow-sm">
+                        <div class="flex items-start space-x-3">
+                            <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
+                            <div class="flex-1">
+                                <h4 id="feedback-title" class="font-extrabold text-sm mb-1"></h4>
+                                <div id="feedback-explanation" class="text-xs md:text-sm text-slate-700 leading-relaxed font-medium"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Navigation Buttons -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+                    <button onclick="prevQuestion()" id="btn-prev" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 text-xs font-extrabold transition border border-slate-200 flex items-center space-x-2 active:scale-95">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+
+                    <div class="text-xs font-bold text-slate-400 hidden sm:block">
+                        Navigasi Cepat: <kbd class="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-300 text-slate-600 font-mono text-[11px]">&leftarrow;</kbd> <kbd class="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-300 text-slate-600 font-mono text-[11px]">&rightarrow;</kbd>
+                    </div>
+
+                    <button onclick="nextQuestion()" id="btn-next" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-extrabold transition shadow-md shadow-indigo-200 flex items-center space-x-2 active:scale-95">
+                        <span>Berikutnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Summary / Result Modal -->
+    <div id="summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm hidden">
+        <div class="bg-white max-w-2xl w-full rounded-3xl p-6 border border-slate-200 max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <h3 class="font-extrabold text-lg text-slate-800 flex items-center">
+                    <i class="fa-solid fa-trophy text-amber-500 text-xl mr-2"></i> Ringkasan Hasil Kuis HOTS
+                </h3>
+                <button onclick="closeSummaryModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="py-4 overflow-y-auto custom-scrollbar flex-1 space-y-5">
+                <!-- Score Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                    <div class="bg-indigo-50 p-3.5 rounded-2xl border border-indigo-100">
+                        <div class="text-xs font-bold text-indigo-700 mb-1">Skor Total</div>
+                        <div id="summary-score" class="text-3xl font-black text-indigo-600">0</div>
+                    </div>
+                    <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-100">
+                        <div class="text-xs font-bold text-emerald-700 mb-1">Benar</div>
+                        <div id="summary-correct" class="text-3xl font-black text-emerald-600">0</div>
+                    </div>
+                    <div class="bg-rose-50 p-3.5 rounded-2xl border border-rose-100">
+                        <div class="text-xs font-bold text-rose-700 mb-1">Salah</div>
+                        <div id="summary-wrong" class="text-3xl font-black text-rose-600">0</div>
+                    </div>
+                    <div class="bg-amber-50 p-3.5 rounded-2xl border border-amber-100">
+                        <div class="text-xs font-bold text-amber-700 mb-1">Kosong</div>
+                        <div id="summary-empty" class="text-3xl font-black text-amber-600">0</div>
+                    </div>
+                </div>
+
+                <!-- Breakdown by Category -->
+                <div>
+                    <h4 class="font-extrabold text-sm text-slate-800 mb-2.5">Analisis Penguasaan Per Kategori</h4>
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-purple-50 p-3 rounded-xl border border-purple-100 flex justify-between items-center font-bold">
+                            <span class="text-purple-800 flex items-center"><i class="fa-solid fa-chart-line mr-2 text-purple-600"></i> Garis & Aksis Bilangan (10 Soal)</span>
+                            <span id="cat-garis-score" class="text-purple-900 bg-purple-200/60 px-2.5 py-1 rounded-lg border border-purple-300">0/10 Benar</span>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex justify-between items-center font-bold">
+                            <span class="text-blue-800 flex items-center"><i class="fa-solid fa-calculator mr-2 text-blue-600"></i> Hitung Campuran Lanjut (10 Soal)</span>
+                            <span id="cat-langsung-score" class="text-blue-900 bg-blue-200/60 px-2.5 py-1 rounded-lg border border-blue-300">0/10 Benar</span>
+                        </div>
+                        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100 flex justify-between items-center font-bold">
+                            <span class="text-emerald-800 flex items-center"><i class="fa-solid fa-book-open mr-2 text-emerald-600"></i> Soal Cerita HOTS (10 Soal)</span>
+                            <span id="cat-cerita-score" class="text-emerald-900 bg-emerald-200/60 px-2.5 py-1 rounded-lg border border-emerald-300">0/10 Benar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
+                <button onclick="openResetModal()" class="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition border border-rose-200">
+                    Ulangi Kuis
+                </button>
+                <button onclick="closeSummaryModal()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold transition shadow-md shadow-indigo-200">
+                    Lanjutkan Review
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="reset-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm hidden">
+        <div class="bg-white max-w-sm w-full rounded-3xl p-5 border border-slate-200 text-center space-y-3 shadow-2xl">
+            <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto text-xl font-bold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="font-extrabold text-slate-800 text-base">Reset Semua Progres?</h3>
+                <p class="text-xs text-slate-500 font-medium mt-1">Semua jawaban dan skor tersimpan akan dihapus secara permanen.</p>
+            </div>
+            <div class="flex items-center space-x-2 pt-2">
+                <button onclick="closeResetModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition border border-slate-200">
+                    Batal
+                </button>
+                <button onclick="confirmReset()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold transition shadow-md shadow-rose-200">
+                    Ya, Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 z-40 bg-slate-900 text-white border border-slate-700 text-xs font-bold px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 transition-all duration-300 opacity-0 transform translate-y-4 pointer-events-none">
+        <i class="fa-solid fa-cloud-arrow-up text-indigo-400 text-sm"></i>
+        <span id="toast-text">Kemajuan tersimpan otomatis</span>
+    </div>
+
+    <script>
+        /**
+         * Cleaned 30 HOTS Questions Dataset (Unique 1-30, Varied Option Keys)
+         * - 10 Garis & Aksis Bilangan
+         * - 10 Hitung Campuran Lanjut
+         * - 10 Soal Cerita HOTS
+         */
+        const questions = [
+            // ================= GARIS & AKSIS BILANGAN (1 - 10) =================
+            {
+                id: 1,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Perhatikan pergerakan 4 panah berurutan pada garis bilangan berikut! Kalimat matematika 4 suku yang tepat menggambarkan seluruh pergerakan dari titik awal hingga akhir adalah ...',
+                lineData: { min: -10, max: 10, a: 7, b: -12, c: 8, d: -5 },
+                options: [
+                    '7 - 12 + 8 - 5 = -2',
+                    '7 + 12 - 8 + 5 = 16',
+                    '-7 - 12 + 8 - 5 = -16',
+                    '7 - 5 + 3 - 2 = 3'
+                ],
+                correct: 0,
+                explanation: '<strong>Langkah-langkah Pergerakan:</strong><br>1. Panah 1 (Biru): dari 0 ke kanan 7 (+7).<br>2. Panah 2 (Merah): dari 7 ke kiri 12 (-12) menuju -5.<br>3. Panah 3 (Hijau): dari -5 ke kanan 8 (+8) menuju 3.<br>4. Panah 4 (Kuning): dari 3 ke kiri 5 (-5) menuju -2.<br>Kalimat matematika: <strong>7 - 12 + 8 - 5 = -2</strong>.'
+            },
+            {
+                id: 2,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Sebuah partikel bergerak pada garis bilangan mulai dari titik <strong>-3</strong>. Partikel bergerak ke kanan 9 satuan, lalu ke kiri 14 satuan, dan terakhir ke kanan 6 satuan. <strong>Posisi akhir</strong> partikel dan <strong>total jarak lintasan</strong> yang ditempuh berturut-turut adalah ...',
+                options: [
+                    'Posisi akhir -2, Total jarak 29 satuan',
+                    'Posisi akhir -2, Total jarak -2 satuan',
+                    'Posisi akhir 2, Total jarak 29 satuan',
+                    'Posisi akhir -8, Total jarak 23 satuan'
+                ],
+                correct: 0,
+                explanation: '<strong>1. Posisi Akhir:</strong> -3 + 9 - 14 + 6 = <strong>-2</strong>.<br><strong>2. Total Jarak Lintasan:</strong> Jarak merupakan total panjang lintasan yang dilewati: 9 + 14 + 6 = <strong>29 satuan</strong>.'
+            },
+            {
+                id: 3,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Titik A berada pada posisi hasil operasi <strong>(-15) + 7</strong>, sedangkan titik B berada pada posisi hasil operasi <strong>12 - 28</strong>. Titik tengah (midpoint) antara titik A dan titik B pada garis bilangan adalah ...',
+                options: [
+                    '-16',
+                    '-12',
+                    '-24',
+                    '-8'
+                ],
+                correct: 1,
+                explanation: '<strong>1. Posisi Titik A:</strong> -15 + 7 = -8.<br><strong>2. Posisi Titik B:</strong> 12 - 28 = -16.<br><strong>3. Titik Tengah:</strong> [(-8) + (-16)] : 2 = (-24) : 2 = <strong>-12</strong>.'
+            },
+            {
+                id: 4,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Diketahui nilai <strong>P = (-4) &times; 3 - (-5)</strong> dan <strong>Q = (-18) : 2 + 3</strong>. Jarak antara titik P dan titik Q pada garis bilangan adalah ...',
+                options: [
+                    '13 satuan',
+                    '7 satuan',
+                    '1 satuan',
+                    '-1 satuan'
+                ],
+                correct: 2,
+                explanation: '<strong>1. Nilai P:</strong> (-4) &times; 3 - (-5) = -12 + 5 = -7.<br><strong>2. Nilai Q:</strong> (-18) : 2 + 3 = -9 + 3 = -6.<br><strong>3. Jarak antara P dan Q:</strong> Selisih antara -6 dan -7 = (-6) - (-7) = <strong>1 satuan</strong>.'
+            },
+            {
+                id: 5,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Perhatikan alur 4 vektor panah pada garis bilangan! Persamaan hitung yang sesuai adalah ...',
+                lineData: { min: -12, max: 8, a: -8, b: 15, c: -11, d: 6 },
+                options: [
+                    '-8 - 15 + 11 - 6 = -18',
+                    '-8 + 15 - 11 + 6 = 2',
+                    '8 - 15 - 11 + 6 = -12',
+                    '-8 + 7 - 4 + 2 = -3'
+                ],
+                correct: 1,
+                explanation: '<strong>Langkah-langkah:</strong><br>1. Panah 1: 0 ke kiri 8 (-8).<br>2. Panah 2: -8 ke kanan 15 (+15) sampai di 7.<br>3. Panah 3: 7 ke kiri 11 (-11) sampai di -4.<br>4. Panah 4: -4 ke kanan 6 (+6) sampai di 2.<br>Kalimat matematika: <strong>-8 + 15 - 11 + 6 = 2</strong>.'
+            },
+            {
+                id: 6,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Jika titik K berada di posisi <strong>-7</strong> pada garis bilangan dan digeser hingga tepat berada di titik tengah antara <strong>-15</strong> dan <strong>5</strong>, maka besar dan arah pergeseran titik K adalah ...',
+                options: [
+                    'Bergeser 2 satuan ke kiri',
+                    'Bergeser 10 satuan ke kanan',
+                    'Bergeser 2 satuan ke kanan',
+                    'Bergeser 5 satuan ke kiri'
+                ],
+                correct: 2,
+                explanation: '<strong>1. Titik tengah antara -15 dan 5:</strong> [(-15) + 5] : 2 = (-10) : 2 = -5.<br><strong>2. Pergeseran dari K (-7) ke titik tengah (-5):</strong> (-5) - (-7) = +2 (artinya <strong>bergeser 2 satuan ke kanan</strong>).'
+            },
+            {
+                id: 7,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Titik awal P berada di <strong>-12</strong>. Titik P digeser ke kanan 18 satuan, kemudian digeser ke kiri 25 satuan, dan terakhir digeser ke kanan 10 satuan. Posisi titik P sekarang berada di angka ...',
+                options: [
+                    '9',
+                    '-5',
+                    '-15',
+                    '-9'
+                ],
+                correct: 3,
+                explanation: 'Operasi pergeseran: -12 + 18 - 25 + 10.<br>Langkah 1: -12 + 18 = 6.<br>Langkah 2: 6 - 25 = -19.<br>Langkah 3: -19 + 10 = <strong>-9</strong>.'
+            },
+            {
+                id: 8,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Banyaknya bilangan bulat x yang memenuhi pertidaksamaan <strong>-15 &le; 2x + 1 &le; 9</strong> pada garis bilangan adalah ...',
+                options: [
+                    '13 bilangan',
+                    '12 bilangan',
+                    '14 bilangan',
+                    '11 bilangan'
+                ],
+                correct: 0,
+                explanation: 'Kurangi 1 pada semua ruas: -16 &le; 2x &le; 8.<br>Bagi 2 pada semua ruas: -8 &le; x &le; 4.<br>Himpunan x: {-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4}.<br>Jumlah anggota: 4 - (-8) + 1 = <strong>13 bilangan</strong>.'
+            },
+            {
+                id: 9,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Perhatikan diagram garis bilangan 4 pergerakan berikut! Hasil akhir operasi tersebut adalah ...',
+                lineData: { min: -12, max: 16, a: -5, b: 18, c: -22, d: 12 },
+                options: [
+                    '-3',
+                    '3',
+                    '8',
+                    '-8'
+                ],
+                correct: 1,
+                explanation: 'Operasi: -5 + 18 - 22 + 12.<br>Langkah 1: -5 + 18 = 13.<br>Langkah 2: 13 - 22 = -9.<br>Langkah 3: -9 + 12 = <strong>3</strong>.'
+            },
+            {
+                id: 10,
+                category: 'garis',
+                categoryLabel: 'Garis & Aksis Bilangan',
+                questionText: 'Lawan dari bilangan <strong>-8</strong> diletakkan pada garis bilangan. Bilangan tersebut kemudian dikurangi 15, ditambah 4, dan dikurangi 6. Hasil akhirnya adalah ...',
+                options: [
+                    '-25',
+                    '1',
+                    '-9',
+                    '-17'
+                ],
+                correct: 2,
+                explanation: 'Lawan dari -8 adalah <strong>+8</strong>.<br>Kalimat matematika: 8 - 15 + 4 - 6.<br>Langkah 1: 8 - 15 = -7.<br>Langkah 2: -7 + 4 = -3.<br>Langkah 3: -3 - 6 = <strong>-9</strong>.'
+            },
+
+            // ================= HITUNG CAMPURAN LANJUT (11 - 20) =================
+            {
+                id: 11,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Berapakah hasil dari <strong>(-24) : (-4) + (-5) &times; 7 - (-18)</strong> ?',
+                options: ['11', '-11', '-47', '29'],
+                correct: 1,
+                explanation: 'Langkah 1 (Pembagian): (-24) : (-4) = 6.<br>Langkah 2 (Perkalian): (-5) &times; 7 = -35.<br>Langkah 3 (Penjumlahan & Pengurangan): 6 + (-35) - (-18) = 6 - 35 + 18 = <strong>-11</strong>.'
+            },
+            {
+                id: 12,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Hasil dari <strong>[(-12) + 28] &times; (-3) - (-45) : 9</strong> adalah ...',
+                options: ['-53', '53', '43', '-43'],
+                correct: 3,
+                explanation: 'Langkah 1 (Dalam Kurung): (-12) + 28 = 16.<br>Langkah 2 (Perkalian): 16 &times; (-3) = -48.<br>Langkah 3 (Pembagian): (-45) : 9 = -5.<br>Langkah 4: -48 - (-5) = -48 + 5 = <strong>-43</strong>.'
+            },
+            {
+                id: 13,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Berapakah hasil operasi kurung siku dan perkalian bertingkat <strong>[(-18) + 34] : (-4) - (-7) &times; (-5)</strong> ?',
+                options: ['-39', '31', '-31', '39'],
+                correct: 0,
+                explanation: 'Langkah 1 (Dalam kurung siku): (-18) + 34 = 16.<br>Langkah 2 (Pembagian): 16 : (-4) = -4.<br>Langkah 3 (Perkalian): (-7) &times; (-5) = 35.<br>Langkah 4: -4 - 35 = <strong>-39</strong>.'
+            },
+            {
+                id: 14,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Hasil dari <strong>[(-15) + 7] &times; (-4) - (-32) : 8</strong> adalah ...',
+                options: ['-28', '36', '28', '-36'],
+                correct: 1,
+                explanation: 'Langkah 1 (Dalam kurung siku): (-15) + 7 = -8.<br>Langkah 2 (Perkalian & Pembagian): (-8) &times; (-4) = 32 dan (-32) : 8 = -4.<br>Langkah 3: 32 - (-4) = 32 + 4 = <strong>36</strong>.'
+            },
+            {
+                id: 15,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Berapakah nilai dari <strong>72 : [(-18) + 6] &times; (-5) - 40</strong> ?',
+                options: ['70', '-70', '-10', '10'],
+                correct: 2,
+                explanation: 'Langkah 1 (Dalam kurung siku): (-18) + 6 = -12.<br>Langkah 2 (Pembagian kiri ke kanan): 72 : (-12) = -6.<br>Langkah 3 (Perkalian): (-6) &times; (-5) = 30.<br>Langkah 4: 30 - 40 = <strong>-10</strong>.'
+            },
+            {
+                id: 16,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Hasil dari <strong>(-5) &times; [(-8) - (-14)] + (-72) : (-9)</strong> adalah ...',
+                options: ['22', '-22', '-38', '38'],
+                correct: 1,
+                explanation: 'Langkah 1 (Dalam Kurung Siku): (-8) - (-14) = -8 + 14 = 6.<br>Langkah 2 (Perkalian & Pembagian): (-5) &times; 6 = -30 dan (-72) : (-9) = 8.<br>Langkah 3: -30 + 8 = <strong>-22</strong>.'
+            },
+            {
+                id: 17,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Berapakah hasil dari <strong>[(-35) + 11] : (-6) - (-4) &times; [18 + (-25)]</strong> ?',
+                options: ['-24', '24', '-32', '32'],
+                correct: 0,
+                explanation: 'Langkah 1 (Kurung): [(-35) + 11] = -24. Lalu [18 + (-25)] = -7.<br>Langkah 2 (Pembagian & Perkalian): (-24) : (-6) = 4. Dan (-4) &times; (-7) = 28.<br>Langkah 3: 4 - 28 = <strong>-24</strong>.'
+            },
+            {
+                id: 18,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Hasil dari <strong>(-85) - (-35) : 7 &times; (-6) + (-12)</strong> adalah ...',
+                options: ['-43', '-115', '43', '-127'],
+                correct: 3,
+                explanation: 'Langkah 1 (Pembagian dulu): (-35) : 7 = -5.<br>Langkah 2 (Perkalian): (-5) &times; (-6) = 30.<br>Langkah 3 (Operasi urut): (-85) - 30 + (-12) = -115 - 12 = <strong>-127</strong>.'
+            },
+            {
+                id: 19,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Berapakah nilai dari <strong>[(-16) &times; 3 + 28] : (-5) - (-14)</strong> ?',
+                options: ['-18', '18', '10', '-10'],
+                correct: 1,
+                explanation: 'Langkah 1 (Dalam Kurung Siku): (-16) &times; 3 = -48 &rArr; -48 + 28 = -20.<br>Langkah 2 (Pembagian): (-20) : (-5) = 4.<br>Langkah 3: 4 - (-14) = 4 + 14 = <strong>18</strong>.'
+            },
+            {
+                id: 20,
+                category: 'langsung',
+                categoryLabel: 'Hitung Campuran Lanjut',
+                questionText: 'Hasil dari <strong>(-54) : (-9) + (-7) &times; (-8) - (-15)</strong> adalah ...',
+                options: ['77', '65', '-77', '47'],
+                correct: 0,
+                explanation: 'Langkah 1 (Pembagian & Perkalian): (-54) : (-9) = 6 dan (-7) &times; (-8) = 56.<br>Langkah 2: 6 + 56 - (-15) = 62 + 15 = <strong>77</strong>.'
+            },
+
+            // ================= SOAL CERITA HOTS (21 - 30) =================
+            {
+                id: 21,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Daging di freezer mula-mula bersuhu <strong>-12&deg;C</strong>. Daging dipanaskan di oven sehingga suhunya naik <strong>3&deg;C setiap 1 menit</strong> selama 12 menit. Kemudian dimasukkan ke ruang pendingin cepat dan suhunya turun <strong>5&deg;C setiap 1 menit</strong> selama 8 menit. Suhu akhir daging adalah ...',
+                options: ['8°C', '-16°C', '-4°C', '16°C'],
+                correct: 1,
+                explanation: '<strong>1. Kenaikan Suhu Oven:</strong> 12 &times; 3&deg;C = +36&deg;C.<br><strong>2. Penurunan Suhu Pendingin:</strong> 8 &times; (-5&deg;C) = -40&deg;C.<br><strong>3. Suhu Akhir:</strong> -12 + 36 - 40 = 24 - 40 = <strong>-16&deg;C</strong>.'
+            },
+            {
+                id: 22,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Kapal selam berada pada kedalaman <strong>120 meter di bawah laut (-120 m)</strong>. Kapal selam naik dengan kecepatan <strong>6 m/menit</strong> selama 8 menit, lalu menyelam lagi sejauh <strong>25 meter</strong>. Sebuah drone terbang tepat di atasnya pada ketinggian <strong>45 meter di atas permukaan laut (+45 m)</strong>. <strong>Jarak vertikal</strong> antara drone dan kapal selam sekarang adalah ...',
+                options: ['142 meter', '97 meter', '122 meter', '167 meter'],
+                correct: 0,
+                explanation: '<strong>1. Posisi Kapal Selam:</strong> -120 + (6 &times; 8) - 25 = -120 + 48 - 25 = -97 m (97m di bawah laut).<br><strong>2. Jarak Vertikal:</strong> Ketinggian Drone - Posisi Kapal Selam = 45 - (-97) = 45 + 97 = <strong>142 meter</strong>.'
+            },
+            {
+                id: 23,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Ujian olimpiade terdiri dari <strong>40 soal</strong>. Aturan penskoran: Jawaban Benar = <strong>+4</strong>, Salah = <strong>-2</strong>, Tidak Dijawab = <strong>-1</strong>. Ani menjawab <strong>32 soal benar</strong>, <strong>5 soal salah</strong>, dan sisanya tidak dijawab. Total skor yang diperoleh Ani adalah ...',
+                options: ['118', '122', '115', '112'],
+                correct: 2,
+                explanation: '<strong>1. Soal Tidak Dijawab:</strong> 40 - (32 + 5) = 3 soal.<br><strong>2. Skor Benar:</strong> 32 &times; 4 = 128.<br><strong>3. Skor Salah:</strong> 5 &times; (-2) = -10.<br><strong>4. Skor Tidak Dijawab:</strong> 3 &times; (-1) = -3.<br><strong>Total Skor:</strong> 128 - 10 - 3 = <strong>115</strong>.'
+            },
+            {
+                id: 24,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Catatan saldo keuangan kas usaha Budi selama seminggu: Hari Senin defisit <strong>Rp150.000 (-150.000)</strong>, Selasa mendapat pemasukan <strong>Rp450.000</strong>, Rabu membayar utang sewa <strong>Rp280.000</strong>, Kamis mengalami kerugian operasional <strong>Rp120.000</strong>, dan Jumat mendapat keuntungan <strong>Rp200.000</strong>. Kondisi akhir keuangan Budi adalah ...',
+                options: [
+                    'Defisit (Rugi) Rp100.000',
+                    'Surplus (Sisa) Rp100.000',
+                    'Surplus (Sisa) Rp200.000',
+                    'Defisit (Rugi) Rp50.000'
+                ],
+                correct: 1,
+                explanation: 'Operasi Keuangan: -150.000 + 450.000 - 280.000 - 120.000 + 200.000.<br>Langkah 1: -150.000 + 450.000 = 300.000.<br>Langkah 2: 300.000 - 280.000 = 20.000.<br>Langkah 3: 20.000 - 120.000 = -100.000.<br>Langkah 4: -100.000 + 200.000 = <strong>+100.000 (Surplus Rp100.000)</strong>.'
+            },
+            {
+                id: 25,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Lift barang gedung tinggi berada di lantai basement <strong>B4 (-4)</strong>. Lift naik <strong>18 lantai</strong>, kemudian turun <strong>9 lantai</strong>, naik lagi <strong>12 lantai</strong>, dan terakhir turun <strong>15 lantai</strong>. Di lantai berapakah lift tersebut berhenti?',
+                options: ['Lantai 4', 'Lantai B2', 'Lantai 2', 'Lantai 6'],
+                correct: 2,
+                explanation: 'Kalimat matematika: -4 + 18 - 9 + 12 - 15.<br>Langkah 1: -4 + 18 = 14.<br>Langkah 2: 14 - 9 = 5.<br>Langkah 3: 5 + 12 = 17.<br>Langkah 4: 17 - 15 = <strong>2 (Berada di Lantai 2)</strong>.'
+            },
+            {
+                id: 26,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Ruang A bersuhu <strong>-18&deg;C</strong> dan Ruang B bersuhu <strong>15&deg;C</strong>. Ruang A mengalami kenaikan suhu <strong>2&deg;C setiap 5 menit</strong> selama 30 menit. Ruang B mengalami penurunan suhu <strong>3&deg;C setiap 4 menit</strong> selama 20 menit. <strong>Selisih suhu akhir</strong> kedua ruangan tersebut adalah ...',
+                options: ['12°C', '0°C', '18°C', '6°C'],
+                correct: 3,
+                explanation: '<strong>1. Suhu Ruang A:</strong> -18 + (30/5 &times; 2) = -18 + (6 &times; 2) = -18 + 12 = -6&deg;C.<br><strong>2. Suhu Ruang B:</strong> 15 - (20/4 &times; 3) = 15 - (5 &times; 3) = 15 - 15 = 0&deg;C.<br><strong>3. Selisih Suhu:</strong> |0&deg;C - (-6&deg;C)| = <strong>6&deg;C</strong>.'
+            },
+            {
+                id: 27,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Sebuah lubang tambang berada di kedalaman <strong>85 meter di bawah tanah (-85 m)</strong>. Lift pekerja menurunkan alat sejauh <strong>40 meter lagi</strong>, lalu mengangkut hasil tambang naik <strong>65 meter</strong>, dan turun kembali <strong>30 meter</strong>. Posisi kedalaman akhir alat tambang tersebut dari permukaan tanah adalah ...',
+                options: [
+                    '90 meter di bawah tanah',
+                    '100 meter di bawah tanah',
+                    '75 meter di bawah tanah',
+                    '60 meter di bawah tanah'
+                ],
+                correct: 0,
+                explanation: 'Kalimat Matematika: -85 - 40 + 65 - 30.<br>Langkah 1: -85 - 40 = -125.<br>Langkah 2: -125 + 65 = -60.<br>Langkah 3: -60 - 30 = -90.<br>Artinya berada di kedalaman <strong>90 meter di bawah permukaan tanah</strong>.'
+            },
+            {
+                id: 28,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Pedagang grosir memulai hari dengan rugi/utang <strong>Rp250.000 (-250.000)</strong>. Ia berhasil menjual 15 barang dengan keuntungan <strong>Rp30.000 per barang</strong>. Namun ia harus membayar biaya kurir <strong>Rp80.000</strong> dan biaya operasional <strong>Rp50.000</strong>. Hasil akhir posisi keuangan pedagang adalah ...',
+                options: [
+                    'Rugi Rp70.000',
+                    'Untung Rp120.000',
+                    'Untung Rp70.000',
+                    'Impas (Rp0)'
+                ],
+                correct: 2,
+                explanation: '<strong>1. Total Keuntungan Penjualan:</strong> 15 &times; 30.000 = +450.000.<br><strong>2. Kalimat Matematika:</strong> -250.000 + 450.000 - 80.000 - 50.000.<br>Langkah: 200.000 - 130.000 = <strong>+70.000 (Untung Rp70.000)</strong>.'
+            },
+            {
+                id: 29,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Tim e-sports bertanding dalam 6 babak turnamen. Aturan poin: Menang = <strong>+50 poin</strong>, Kalah = <strong>-30 poin</strong>, Seri = <strong>-10 poin</strong>. Tim tersebut meraih <strong>3 kemenangan</strong>, <strong>2 kekalahan</strong>, dan <strong>1 seri</strong>. Jika poin awal tim adalah <strong>100 poin</strong>, maka poin akhir tim adalah ...',
+                options: ['200 poin', '180 poin', '160 poin', '140 poin'],
+                correct: 1,
+                explanation: '<strong>1. Poin Menang:</strong> 3 &times; 50 = +150.<br><strong>2. Poin Kalah:</strong> 2 &times; (-30) = -60.<br><strong>3. Poin Seri:</strong> 1 &times; (-10) = -10.<br><strong>Total Poin Akhir:</strong> 100 + 150 - 60 - 10 = <strong>180 poin</strong>.'
+            },
+            {
+                id: 30,
+                category: 'cerita',
+                categoryLabel: 'Soal Cerita HOTS',
+                questionText: 'Suhu di kaki gunung (ketinggian 0 m) adalah <strong>24&deg;C</strong>. Setiap naik <strong>150 meter</strong>, suhu udara turun <strong>1&deg;C</strong>. Seorang pendaki mendaki hingga ketinggian <strong>1.800 meter</strong>, lalu turun kembali <strong>450 meter</strong>, dan mendaki lagi sejauh <strong>750 meter</strong>. Suhu udara di posisi akhir pendaki adalah ...',
+                options: ['12°C', '8°C', '14°C', '10°C'],
+                correct: 3,
+                explanation: '<strong>1. Posisi Ketinggian Akhir:</strong> 1.800 - 450 + 750 = 2.100 meter.<br><strong>2. Total Penurunan Suhu:</strong> 2.100 : 150 = 14&deg;C penurunan.<br><strong>3. Suhu Akhir:</strong> 24&deg;C - 14&deg;C = <strong>10&deg;C</strong>.'
+            }
+        ];
+
+        const LOCAL_STORAGE_KEY = 'quiz_bilangan_bulat_hots_v3';
+        
+        let state = {
+            userAnswers: new Array(30).fill(null),
+            currentIndex: 0,
+            activeFilter: 'all'
+        };
+
+        function loadSavedState() {
+            try {
+                const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.userAnswers && Array.isArray(parsed.userAnswers) && parsed.userAnswers.length === 30) {
+                        state.userAnswers = parsed.userAnswers;
+                    }
+                    if (typeof parsed.currentIndex === 'number' && parsed.currentIndex >= 0 && parsed.currentIndex < 30) {
+                        state.currentIndex = parsed.currentIndex;
+                    }
+                    showToast('Progres jawaban dimuat kembali!');
+                }
+            } catch (e) {
+                console.error('Error loading saved state:', e);
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({
+                    userAnswers: state.userAnswers,
+                    currentIndex: state.currentIndex
+                }));
+                showToast('Kemajuan tersimpan otomatis');
+            } catch (e) {
+                console.error('Error saving state:', e);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            toastText.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            }, 2000);
+        }
+
+        function generateNumberLineSVG(lineData) {
+            const { a, b, c, d } = lineData;
+            
+            const pos0 = 0;
+            const pos1 = a;
+            const pos2 = a + b;
+            const pos3 = a + b + c;
+            const pos4 = a + b + c + d;
+
+            const allPositions = [pos0, pos1, pos2, pos3, pos4];
+            const minPos = Math.min(...allPositions);
+            const maxPos = Math.max(...allPositions);
+
+            const min = Math.min(lineData.min !== undefined ? lineData.min : -10, minPos - 2);
+            const max = Math.max(lineData.max !== undefined ? lineData.max : 10, maxPos + 2);
+            const span = max - min;
+            
+            const svgWidth = 820;
+            const svgHeight = 190;
+            const padLeft = 45;
+            const padRight = 45;
+            const usableWidth = svgWidth - padLeft - padRight;
+            
+            const getX = (val) => padLeft + ((val - min) / span) * usableWidth;
+
+            const yAxis = 160;
+            const yArrow1 = 125;
+            const yArrow2 = 90;
+            const yArrow3 = 55;
+            const yArrow4 = 20;
+
+            const x0 = getX(pos0);
+            const x1 = getX(pos1);
+            const x2 = getX(pos2);
+            const x3 = getX(pos3);
+            const x4 = getX(pos4);
+
+            let ticksSVG = '';
+            for (let i = min; i <= max; i++) {
+                const tx = getX(i);
+                const isZero = (i === 0);
+                ticksSVG += `
+                    <line x1="${tx}" y1="${yAxis - 6}" x2="${tx}" y2="${yAxis + 6}" stroke="${isZero ? '#d97706' : '#94a3b8'}" stroke-width="${isZero ? '3' : '1.5'}" />
+                    <text x="${tx}" y="${yAxis + 20}" fill="${isZero ? '#b45309' : '#475569'}" font-size="10" font-weight="${isZero ? '800' : '600'}" text-anchor="middle" font-family="Plus Jakarta Sans">${i}</text>
+                `;
+            }
+
+            return `
+                <svg viewBox="0 0 ${svgWidth} ${svgHeight}" class="w-full h-auto select-none overflow-visible" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="marker-blue" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+                            <path d="M 0 0.5 L 7 3.5 L 0 6.5 Z" fill="#0284c7" />
+                        </marker>
+                        <marker id="marker-pink" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+                            <path d="M 0 0.5 L 7 3.5 L 0 6.5 Z" fill="#e11d48" />
+                        </marker>
+                        <marker id="marker-emerald" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+                            <path d="M 0 0.5 L 7 3.5 L 0 6.5 Z" fill="#059669" />
+                        </marker>
+                        <marker id="marker-amber" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+                            <path d="M 0 0.5 L 7 3.5 L 0 6.5 Z" fill="#d97706" />
+                        </marker>
+                    </defs>
+
+                    <!-- Baseline Axis -->
+                    <line x1="${padLeft - 20}" y1="${yAxis}" x2="${svgWidth - padRight + 20}" y2="${yAxis}" stroke="#334155" stroke-width="3" />
+                    <path d="M ${padLeft - 25} ${yAxis} L ${padLeft - 17} ${yAxis - 5} L ${padLeft - 17} ${yAxis + 5} Z" fill="#334155" />
+                    <path d="M ${svgWidth - padRight + 25} ${yAxis} L ${svgWidth - padRight + 17} ${yAxis - 5} L ${svgWidth - padRight + 17} ${yAxis + 5} Z" fill="#334155" />
+
+                    <!-- Ticks & Labels -->
+                    ${ticksSVG}
+
+                    <!-- Dotted Guidelines -->
+                    <line x1="${x0}" y1="${yAxis - 6}" x2="${x0}" y2="${yArrow1}" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3 3" />
+                    <line x1="${x1}" y1="${yAxis - 6}" x2="${x1}" y2="${yArrow2}" stroke="#e11d48" stroke-width="1.5" stroke-dasharray="3 3" />
+                    <line x1="${x2}" y1="${yAxis - 6}" x2="${x2}" y2="${yArrow3}" stroke="#059669" stroke-width="1.5" stroke-dasharray="3 3" />
+                    <line x1="${x3}" y1="${yAxis - 6}" x2="${x3}" y2="${yArrow4}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="3 3" />
+                    <line x1="${x4}" y1="${yAxis - 6}" x2="${x4}" y2="${yArrow4}" stroke="#334155" stroke-width="1.5" stroke-dasharray="3 3" />
+
+                    <!-- Arrows 1-4 -->
+                    <line x1="${x0}" y1="${yArrow1}" x2="${x1}" y2="${yArrow1}" stroke="#0284c7" stroke-width="3.5" marker-end="url(#marker-blue)" />
+                    <line x1="${x1}" y1="${yArrow2}" x2="${x2}" y2="${yArrow2}" stroke="#e11d48" stroke-width="3.5" marker-end="url(#marker-pink)" />
+                    <line x1="${x2}" y1="${yArrow3}" x2="${x3}" y2="${yArrow3}" stroke="#059669" stroke-width="3.5" marker-end="url(#marker-emerald)" />
+                    <line x1="${x3}" y1="${yArrow4}" x2="${x4}" y2="${yArrow4}" stroke="#d97706" stroke-width="3.5" marker-end="url(#marker-amber)" />
+                </svg>
+            `;
+        }
+
+        function updateHeaderStats() {
+            let correct = 0;
+            let wrong = 0;
+            let answeredCount = 0;
+
+            state.userAnswers.forEach((ans, idx) => {
+                if (ans !== null) {
+                    answeredCount++;
+                    if (ans === questions[idx].correct) {
+                        correct++;
+                    } else {
+                        wrong++;
+                    }
+                }
+            });
+
+            document.getElementById('header-correct').textContent = correct;
+            document.getElementById('header-wrong').textContent = wrong;
+            document.getElementById('header-remaining').textContent = 30 - answeredCount;
+
+            const percent = Math.round((answeredCount / 30) * 100);
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+        }
+
+        function renderQuestionGrid() {
+            const gridContainer = document.getElementById('question-grid');
+            gridContainer.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                if (state.activeFilter !== 'all' && q.category !== state.activeFilter) {
+                    return;
+                }
+
+                const ans = state.userAnswers[idx];
+                const isActive = (idx === state.currentIndex);
+
+                let btnClass = 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100';
+                let iconClass = '';
+
+                if (ans !== null) {
+                    if (ans === q.correct) {
+                        btnClass = 'bg-emerald-600 text-white border-emerald-600 font-extrabold shadow-sm';
+                        iconClass = '<i class="fa-solid fa-check text-[10px] ml-1"></i>';
+                    } else {
+                        btnClass = 'bg-rose-600 text-white border-rose-600 font-extrabold shadow-sm';
+                        iconClass = '<i class="fa-solid fa-xmark text-[10px] ml-1"></i>';
+                    }
+                }
+
+                if (isActive) {
+                    btnClass += ' ring-2 ring-indigo-500 ring-offset-2 ring-offset-slate-100 border-indigo-500 font-extrabold';
+                }
+
+                const button = document.createElement('button');
+                button.className = `h-10 rounded-xl border flex items-center justify-center text-xs font-bold transition ${btnClass}`;
+                button.innerHTML = `<span>${q.id}</span>${iconClass}`;
+                button.onclick = () => jumpToQuestion(idx);
+
+                gridContainer.appendChild(button);
+            });
+        }
+
+        function filterNav(filterType) {
+            state.activeFilter = filterType;
+            
+            ['all', 'garis', 'langsung', 'cerita'].forEach(f => {
+                const btn = document.getElementById(`btn-filter-${f}`);
+                if (f === filterType) {
+                    btn.className = 'px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white font-bold shadow-sm transition';
+                } else {
+                    btn.className = 'px-2.5 py-1.5 rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 font-bold transition';
+                }
+            });
+
+            const labels = {
+                all: '30 Soal',
+                garis: '10 Garis & Aksis',
+                langsung: '10 Hitung Campuran',
+                cerita: '10 Soal Cerita HOTS'
+            };
+            document.getElementById('filter-status-text').textContent = labels[filterType];
+
+            renderQuestionGrid();
+        }
+
+        function renderQuestionCard() {
+            const q = questions[state.currentIndex];
+            const userAnswer = state.userAnswers[state.currentIndex];
+
+            // Badges
+            document.getElementById('question-number-badge').textContent = `Soal No. ${q.id}`;
+            document.getElementById('question-category-badge').textContent = q.categoryLabel;
+            
+            // Category badge colors
+            const catBadge = document.getElementById('question-category-badge');
+            if (q.category === 'garis') {
+                catBadge.className = 'px-3 py-1 rounded-xl bg-purple-100 text-purple-800 border border-purple-200 text-xs font-bold';
+            } else if (q.category === 'langsung') {
+                catBadge.className = 'px-3 py-1 rounded-xl bg-blue-100 text-blue-800 border border-blue-200 text-xs font-bold';
+            } else {
+                catBadge.className = 'px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold';
+            }
+
+            // Status Pill
+            const statusPill = document.getElementById('question-status-pill');
+            if (userAnswer === null) {
+                statusPill.textContent = 'Belum Dijawab';
+                statusPill.className = 'text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
+            } else if (userAnswer === q.correct) {
+                statusPill.textContent = 'Jawaban Benar';
+                statusPill.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+            } else {
+                statusPill.textContent = 'Jawaban Salah';
+                statusPill.className = 'text-xs font-bold px-3 py-1 rounded-full bg-rose-100 text-rose-800 border border-rose-300';
+            }
+
+            // Question Text
+            document.getElementById('question-text').innerHTML = q.questionText;
+
+            // SVG Display
+            const numLineWrapper = document.getElementById('number-line-wrapper');
+            if (q.category === 'garis' && q.lineData) {
+                numLineWrapper.classList.remove('hidden');
+                document.getElementById('number-line-svg').innerHTML = generateNumberLineSVG(q.lineData);
+            } else {
+                numLineWrapper.classList.add('hidden');
+            }
+
+            // Options rendering
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const optionLabels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectOption(optIdx);
+
+                let btnStyles = 'bg-white border-slate-200 hover:border-indigo-500 text-slate-800 shadow-sm';
+                let badgeStyles = 'bg-slate-100 text-slate-600 border border-slate-200';
+
+                if (userAnswer !== null) {
+                    if (optIdx === q.correct) {
+                        btnStyles = 'bg-emerald-50 border-2 border-emerald-500 text-emerald-950 font-bold';
+                        badgeStyles = 'bg-emerald-600 text-white font-black';
+                    } else if (optIdx === userAnswer) {
+                        btnStyles = 'bg-rose-50 border-2 border-rose-500 text-rose-950 font-bold';
+                        badgeStyles = 'bg-rose-600 text-white font-black';
+                    } else {
+                        btnStyles = 'bg-slate-50 border border-slate-200 text-slate-400 opacity-60';
+                    }
+                }
+
+                btn.className = `option-btn w-full text-left p-3.5 md:p-4 rounded-2xl font-semibold text-xs md:text-sm flex items-center space-x-3 ${btnStyles}`;
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-xs transition ${badgeStyles}">
+                        ${optionLabels[optIdx]}
+                    </span>
+                    <span class="flex-1 leading-relaxed">${optText}</span>
+                `;
+
+                optionsContainer.appendChild(btn);
+            });
+
+            // Feedback Box rendering
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackExplanation = document.getElementById('feedback-explanation');
+
+            if (userAnswer !== null) {
+                feedbackBox.classList.remove('hidden');
+                feedbackExplanation.innerHTML = q.explanation;
+
+                if (userAnswer === q.correct) {
+                    feedbackBox.className = 'rounded-2xl p-4 border border-emerald-300 bg-emerald-50 text-emerald-950 mb-4 shadow-sm';
+                    feedbackIcon.className = 'text-2xl mt-0.5 shrink-0 text-emerald-600';
+                    feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                    feedbackTitle.textContent = 'Jawaban Kamu Tepat Sekali! 🎉';
+                    feedbackTitle.className = 'font-extrabold text-sm mb-1 text-emerald-800';
+                } else {
+                    feedbackBox.className = 'rounded-2xl p-4 border border-rose-300 bg-rose-50 text-rose-950 mb-4 shadow-sm';
+                    feedbackIcon.className = 'text-2xl mt-0.5 shrink-0 text-rose-600';
+                    feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+                    feedbackTitle.textContent = `Jawaban Belum Tepat! (Kunci Jawaban: ${optionLabels[q.correct]})`;
+                    feedbackTitle.className = 'font-extrabold text-sm mb-1 text-rose-800';
+                }
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            // Prev / Next button state
+            document.getElementById('btn-prev').disabled = (state.currentIndex === 0);
+            
+            const btnNext = document.getElementById('btn-next');
+            if (state.currentIndex === 29) {
+                btnNext.innerHTML = '<span>Lihat Hasil</span> <i class="fa-solid fa-trophy"></i>';
+            } else {
+                btnNext.innerHTML = '<span>Berikutnya</span> <i class="fa-solid fa-arrow-right"></i>';
+            }
+
+            updateHeaderStats();
+            renderQuestionGrid();
+        }
+
+        function selectOption(optIndex) {
+            state.userAnswers[state.currentIndex] = optIndex;
+            saveState();
+            renderQuestionCard();
+        }
+
+        function jumpToQuestion(index) {
+            if (index >= 0 && index < 30) {
+                state.currentIndex = index;
+                renderQuestionCard();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevQuestion() {
+            if (state.currentIndex > 0) {
+                state.currentIndex--;
+                renderQuestionCard();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function nextQuestion() {
+            if (state.currentIndex < 29) {
+                state.currentIndex++;
+                renderQuestionCard();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                openSummaryModal();
+            }
+        }
+
+        // Keyboard Navigation Support
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowLeft') {
+                prevQuestion();
+            } else if (e.key === 'ArrowRight') {
+                nextQuestion();
+            }
+        });
+
+        function openSummaryModal() {
+            let correct = 0;
+            let wrong = 0;
+            let empty = 0;
+
+            let catGarisCorrect = 0;
+            let catLangsungCorrect = 0;
+            let catCeritaCorrect = 0;
+
+            state.userAnswers.forEach((ans, idx) => {
+                const q = questions[idx];
+                if (ans === null) {
+                    empty++;
+                } else if (ans === q.correct) {
+                    correct++;
+                    if (q.category === 'garis') catGarisCorrect++;
+                    else if (q.category === 'langsung') catLangsungCorrect++;
+                    else if (q.category === 'cerita') catCeritaCorrect++;
+                } else {
+                    wrong++;
+                }
+            });
+
+            const score = Math.round((correct / 30) * 100);
+
+            document.getElementById('summary-score').textContent = score;
+            document.getElementById('summary-correct').textContent = correct;
+            document.getElementById('summary-wrong').textContent = wrong;
+            document.getElementById('summary-empty').textContent = empty;
+
+            document.getElementById('cat-garis-score').textContent = `${catGarisCorrect}/10 Benar`;
+            document.getElementById('cat-langsung-score').textContent = `${catLangsungCorrect}/10 Benar`;
+            document.getElementById('cat-cerita-score').textContent = `${catCeritaCorrect}/10 Benar`;
+
+            document.getElementById('summary-modal').classList.remove('hidden');
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summary-modal').classList.add('hidden');
+        }
+
+        function openResetModal() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        function confirmReset() {
+            state.userAnswers = new Array(30).fill(null);
+            state.currentIndex = 0;
+            saveState();
+            closeResetModal();
+            closeSummaryModal();
+            renderQuestionCard();
+            showToast('Semua progres kuis HOTS di-reset!');
+        }
+
+        window.onload = function() {
+            loadSavedState();
+            renderQuestionCard();
+        };
+    </script>
+</body>
+</html>
